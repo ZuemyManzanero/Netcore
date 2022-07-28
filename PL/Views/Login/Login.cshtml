@@ -1,0 +1,34 @@
+﻿@model ML.Usuario
+<link rel="stylesheet" href="~/css/Estilo.css" type="text/css"/>
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<body>
+    <header>
+        <h1>Portal de inicio</h1>
+    </header>
+    <main>
+        <form id="login_form" class="form_class" action="login/login" method="post">
+            <div class="form_div">
+                @using (Html.BeginForm("GetAll", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                <center>
+                <label>UserName: </label>
+                <br /><br />
+                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @id = "txtUserName"})
+                <br /><br /><br />
+                <label>Password: </label>
+                <br /><br />
+                @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @id = "txtPassword" })
+                <br />
+                <div class="group">
+                    <br /><br />
+                    <input type="submit" class="button" value="Ingresar" href="@Url.Action("Login", "Login")"/>
+                </div>
+                </center>
+                }
+            </div>
+        </form>
+    </main>
+</body>

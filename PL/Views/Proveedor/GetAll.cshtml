@@ -1,0 +1,44 @@
+﻿@model ML.Proveedor
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Proveedor</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <h5>Seleccione un registro para editarlo o (+) para agregar...</h5>
+        <hr />
+    </div>
+
+</div>
+
+<div style="float:right;">
+    @Html.ActionLink("Agregar", "Form", "Proveedor", htmlAttributes: new { @class = "btn btn-success" })
+</div>
+
+<table class="table table-bordered table-responsive">
+    <thead>
+        <tr>
+            <td>Editar</td>
+            <td style ="display : none; ">IdProveedor</td>
+            <td>Nombre</td>
+            <td>Telefono</td>
+            <td>Eliminar</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ML.Proveedor proveedor in Model.Proveedores)
+        {
+            <tr>
+                <td><a class="btn btn-warning" style ="gi" href="@Url.Action("Form", "Proveedor", new { IdProveedor = proveedor.IdProveedor })"></a></td>
+                <td style ="display :none;">@proveedor.IdProveedor</td>
+                <td>@proveedor.Nombre</td>
+                <td>@proveedor.Telefono</td>
+           
+            <td><a class="btn btn-danger glyphicon glyphicon-trash" href="@Url.Action("Delete", "ProveedorController", new { IdProveedor = proveedor.IdProveedor})" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>
+        </tr>
+        }
+    </tbody>
+</table>

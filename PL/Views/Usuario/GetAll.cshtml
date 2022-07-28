@@ -1,0 +1,111 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Usuarios</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <h5>Seleccione un registro para editarlo o (+) para agregar...</h5>
+        <hr />
+    </div>
+</div>
+
+ @using (Html.BeginForm("GetAll", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+      <div class="row">
+           <div class="col-md-3">
+                @Html.LabelFor(model => model.Nombre)
+                <div class="input-group mb-3">
+                     <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @id = "txtNombre" })
+                </div>
+           </div>
+
+           <div class="col-md-3">
+                @Html.LabelFor(model => model.ApellidoPaterno)
+                <div class="input-group mb-3">
+                     <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                @Html.TextBoxFor(model => model.ApellidoPaterno, new { @class = "form-control", @id = "txtApellidoPaterno" })
+                </div>
+           </div>
+
+            <div class="col-md-3">
+                 @Html.LabelFor(model => model.ApellidoMaterno)
+                 <div class="input-group mb-3">
+                      <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                 @Html.TextBoxFor(model => model.ApellidoMaterno, new { @class = "form-control", @id = "txtApellidoMaterno" })
+                 </div>
+            </div>
+
+            <div class="col-md-3">
+                 <input type="submit" value="Buscar" class="btn btn-success"/>
+            </div>
+                       
+      </div>
+}
+
+<div style="float:right;">
+    @Html.ActionLink("Agregar", "Form", "Usuario", htmlAttributes: new { @class = "btn btn-success" })
+</div>
+
+<table class="table table-bordered table-responsive">
+    <thead>
+        <tr>
+            <td>Editar</td>
+            <td style ="display : none; ">IdUsuario</td>
+            <td>UserName</td>
+            <td>Nombre</td>
+            <td>Email y Password</td>
+            <td>Sexo</td>
+            <td>Telefono</td>
+            <td>FechaNacimiento</td>
+            <td>Direccion</td>
+            <td>CURP</td>
+            <td>Nombre del Rol</td>
+            <td>Imagen</td>
+            <td>Status</td>
+            <td>Eliminar</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ML.Usuario usuario in Model.Usuarios)
+        {
+            <tr>
+                <td><a class="btn btn-warning bi bi-pencil" href="@Url.Action("Form", "Usuario", new { IdUsuario = usuario.IdUsuario })"></a></td>
+                <td style ="display :none;">@usuario.IdUsuario</td>
+                <td>@usuario.UserName</td>
+                <td>@usuario.Nombre @usuario.ApellidoPaterno @usuario.ApellidoMaterno</td>
+                <td>@usuario.Email @usuario.Password</td>
+                <td>@usuario.Sexo</td>
+                <td>@usuario.Telefono @usuario.Celular</td>
+                <td>@usuario.FechaNacimiento</td>
+                <td>@usuario.Direccion.Calle @usuario.Direccion.NumeroExterior @usuario.Direccion.NumeroInterior @usuario.Direccion.Colonia.Nombre</td>
+                <td>@usuario.CURP</td>
+                <td>@usuario.Rol.Nombre</td>
+                @if (usuario.Imagen != null)
+             {
+                <td><img src="data:image/*;base64,@usuario.Imagen" style="width:70px ; height:70px"/></td>
+              }
+              else
+              {       
+                  <td><img src="~/Imagenes/sinimagen.jpg" width="90px" height="90px" id="Img" /></td>
+              }
+              <td>
+                 @if(usuario.Status == true)   
+                 {
+                 <a href="@Url.Action("UpdateStatus", "Usuario", new { IdUsuario = usuario.IdUsuario })"> <img src="~/Imagenes/on.jpg" style=" height:25px; width:50px;" /></a>
+                 }
+                 else
+                 {
+                 <a href="@Url.Action("UpdateStatus", "Usuario", new { IdUsuario = usuario.IdUsuario })"> <img src="~/Imagenes/off.jpg" style=" height:25px; width:50px;" /></a>
+                 }                       
+             </td>
+
+            <td><a class="btn btn-danger bi bi-trash3-fill" href="@Url.Action("Delete", "Usuario", new { IdUsuario= usuario.IdUsuario})" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>
+        </tr>
+        }
+    </tbody>
+</table>

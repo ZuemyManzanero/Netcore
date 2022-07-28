@@ -1,0 +1,99 @@
+﻿@model ML.Producto
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Productos</h2>
+
+@using (Html.BeginForm("GetAll", "VentaProducto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("Area")
+            <div class=input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-journal-text" style="color: midnightblue"></i></span>
+                @Html.DropDownListFor(model => model.Departamento.Area.IdArea, new SelectList(Model.Departamento.Area.Areas, "IdArea", "Nombre"), "Selecciona un Área", new { @class = "form-control", @id="ddlArea"})
+            </div>
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Departamentos")
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><i class="bi bi-journal-text" style="color: midnightblue"></i></span>
+                @if (Model.Departamento.Departamentos != null)
+                {
+                    @Html.DropDownListFor(model => model.Departamento.IdDepartamento, new SelectList(string.Empty, "Value", "Text"), "Selecciona un Departamento", new { @class = "form-control", @id = "ddlDepartamento" })
+                    @Html.ValidationMessageFor(model => model.Departamento.IdDepartamento, null, new{@class="text-danger"})
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.Departamento.IdDepartamento, new SelectList(Model.Departamento.Departamentos, "IdDepartamento", "Nombre"), "Selecciona un Departamento", new { @class = "form-control", @id = "ddlDepartamento" })
+                    @Html.ValidationMessageFor(model => model.Departamento.IdDepartamento, null, new{@class="text-danger"})
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <input type="submit" value="Buscar" class="btn btn-success" />
+        </div>
+    </div>
+}
+<div class="row">
+    @foreach (ML.Producto producto in Model.Productos)
+    {
+        <div class="col mt-3 pt-3">
+            <div class="card text-black border-danger" style="width: 18rem;">
+                <h5 class="card-title text-center">*@producto.Nombre*</h5>
+                @if (producto.Imagen != null && producto.Imagen != "")
+                {
+                    <img src="data:image/*;base64,@producto.Imagen" class="rounded mx-auto" style="width:auto ; height:150px" />
+                }
+                else
+                {
+
+                    <img src="~/Images/sinimagen.png" width="auto" class="rounded mx-auto" height="150px" id="Img" />
+                }
+                <div class="card-body">
+                    <div class="col-md-3" style="display: none;">
+                        @Html.LabelFor(model => model.IdProducto, new { @class = "hidden" })
+                        @Html.TextBoxFor(model => model.IdProducto, new { @class = "hidden form-control", autocomplete = "off" })
+                        @Html.ValidationMessageFor(model => model.IdProducto)
+                    </div>
+                    <p class="card-text text-center">"@producto.Descripcion"</p>
+                    <a class="btn btn-primary rounded mx-auto d-block"><i class="bi bi-cart-plus"></i>$@producto.PrecioUnitario</a>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts
+{
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+           $("#ddlArea").change(function () {
+               $("#ddlDepartamento").empty();
+               $.ajax({
+                   type: 'POST',
+                   url: '@Url.Action("DepartamentoGetByIdArea")',
+                   dataType: 'json',
+                   data: { IdArea: $("#ddlArea").val() },
+                   success: function (departamentos) {
+                       $("#ddlDepartamento").append('<option value="0">'+ 'Seleccione una opción' + '</option>');
+                       $.each(departamentos, function (i, departamentos) {
+                           $("#ddlDepartamento").append('<option value="'
+                                                      + departamentos.idDepartamento + '">'
+                                                      + departamentos.nombre + '</option>'
+                           );
+                       });
+                   },
+                   error: function (ex) {
+                       alert('Failed.' + ex);
+                   }
+               });
+           });
+       });
+
+</script>
+}
